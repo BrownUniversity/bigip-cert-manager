@@ -1,0 +1,33 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bigip-cert-manager
+  labels:
+    app.kubernetes.io/name: bigip-cert-manager
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: bigip-cert-manager
+            app.kubernetes.io/component: cron
+        spec:
+          imagePullSecrets:
+            - name: regcred
+          securityContext: {}
+          restartPolicy: Never
+          containers:
+            - name: cert-manager
+              image: nginx:latest
+              imagePullPolicy: Always
+              envFrom:
+                - secretRef:
+                    name: config
+              resources: {}
+          nodeSelector:
+          affinity:
+          tolerations:
