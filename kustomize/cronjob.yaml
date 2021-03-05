@@ -16,12 +16,10 @@ spec:
             app.kubernetes.io/name: bigip-cert-manager
             app.kubernetes.io/component: cron
         spec:
-          imagePullSecrets:
-            - name: regcred
           restartPolicy: Never
           containers:
             - name: cert-manager
-              image: docker.pkg.github.com/brownuniversity/bigip-cert-manager/cron:latest
+              image: ghcr.io/brownuniversity/bigip-cert-manager:latest
               imagePullPolicy: Always
               envFrom:
                 - secretRef:
