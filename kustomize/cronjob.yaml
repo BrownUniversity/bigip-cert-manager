@@ -18,16 +18,23 @@ spec:
         spec:
           imagePullSecrets:
             - name: regcred
-          securityContext: {}
           restartPolicy: Never
           containers:
             - name: cert-manager
-              image: nginx:latest
+              image: docker.pkg.github.com/brownuniversity/bigip-cert-manager/cron:latest
               imagePullPolicy: Always
               envFrom:
                 - secretRef:
                     name: config
-              resources: {}
           nodeSelector:
-          affinity:
+            node-role.kubernetes.io/worker: "true"
+            qaint: "true"
           tolerations:
+            - key: env
+              operator: Equal
+              value: qa
+              effect: NoSchedule
+            - key: location
+              operator: Equal
+              value: int
+              effect: NoSchedule

@@ -1,0 +1,24 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY_BASE: docker.pkg.github.com/brownuniversity/bigip-cert-manager
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Docker login
+        run: echo '${{ secrets.GITHUB_TOKEN }}' | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - name: Docker build
+        run: docker build -t $REGISTRY_BASE/cron:latest .
+      - name: Docker push
+        run: docker push $REGISTRY_BASE/cron:latest
+      - name: Deploy to C3
+        run: make deploy
